@@ -15,9 +15,16 @@ my %ct_tests = (
                           "name"        => "/u/nsb/Me.jpeg" }
         },
     '' => { discrete => "text", composite => "plain", 
-            attributes => { charset => "us-ascii" } }
+            attributes => { charset => "us-ascii" } },
+    'multipart/mixed; boundary="----------=_1026452699-10321-0" ' => {
+              'discrete' => 'multipart',
+              'composite' => 'mixed',
+              'attributes' => {
+                                'boundary' => '----------=_1026452699-10321-0'
+                              }
+           },
 );
 
-for (keys %ct_tests) {
+for (sort keys %ct_tests) {
     is_deeply(parse_content_type($_), $ct_tests{$_}, "Can parse C-T $_");
 }

@@ -1,11 +1,11 @@
 package Email::MIME::ContentType;
-require 5.006;
+# $Id: ContentType.pm,v 1.3 2005/02/22 00:24:03 cwest Exp $
 use base 'Exporter';
-our @EXPORT = qw(parse_content_type);
+use vars qw[$VERSION @EXPORT];
+@EXPORT = qw(parse_content_type);
 use strict;
 use Carp;
-use warnings;
-our $VERSION = '1.0';
+$VERSION = '1.01';
 
 my $tspecials = quotemeta '()<>@,;:\\"/[]?=';
 my $ct_default = 'text/plain; charset=us-ascii';
@@ -38,6 +38,7 @@ sub _parse_attributes {
     while ($_) {
         s/^;//;
         s/^\s+// and next;
+        s/\s+$//;
         s/^([^$tspecials]+)=// or do { carp "Illegal Content-Type parameter $_";
                                        return $attribs; };
         my $attribute = lc $1;
@@ -67,7 +68,6 @@ sub _extract_ct_attribute_value { # EXPECTS AND MODIFIES $_
 1;
 
 __END__
-# Below is stub documentation for your module. You better edit it!
 
 =head1 NAME
 
@@ -83,7 +83,7 @@ Email::MIME::ContentType - Parse a MIME Content-Type Header
     composite => "plain",
     attributes => {
         charset => "us-ascii",
-        frormat => "flowed"
+        format => "flowed"
     }
   }
 
@@ -100,7 +100,12 @@ C<parse_content_type>
 
 =head1 AUTHOR
 
+Casey West, C<casey@geeknest.com>
 Simon Cozens, C<simon@cpan.org>
+
+=head1 CONTACT
+
+Perl Email Project, C<pep@perl.org>.
 
 =head1 SEE ALSO
 
