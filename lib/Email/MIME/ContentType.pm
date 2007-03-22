@@ -1,5 +1,5 @@
 package Email::MIME::ContentType;
-# $Id: ContentType.pm,v 1.3 2005/02/22 00:24:03 cwest Exp $
+# $Id: /my/pep/Email-MIME-ContentType/trunk/lib/Email/MIME/ContentType.pm 31133 2007-03-22T19:52:26.296283Z rjbs  $
 use base 'Exporter';
 use vars qw[
   $VERSION @EXPORT
@@ -8,7 +8,7 @@ use vars qw[
 @EXPORT = qw(parse_content_type);
 use strict;
 use Carp;
-$VERSION = '1.012';
+$VERSION = '1.014';
 
 $STRICT_PARAMS=1;
 
@@ -91,30 +91,36 @@ Email::MIME::ContentType - Parse a MIME Content-Type Header
 
 =head1 VERSION
 
-version 1.012
+version 1.013
 
-  $Id$
+  $Id: /my/pep/Email-MIME-ContentType/trunk/lib/Email/MIME/ContentType.pm 31133 2007-03-22T19:52:26.296283Z rjbs  $
 
 =head1 SYNOPSIS
 
   use Email::MIME::ContentType;
-  my $ct = "Content-Type: text/plain; charset="us-ascii"; format=flowed";
+
+  # Content-Type: text/plain; charset="us-ascii"; format=flowed
+  my $ct = 'text/plain; charset="us-ascii"; format=flowed';
   my $data = parse_content_type($ct);
+
   $data = {
-    discrete => "text",
-    composite => "plain",
+    discrete   => "text",
+    composite  => "plain",
     attributes => {
-        charset => "us-ascii",
-        format => "flowed"
+      charset => "us-ascii",
+      format  => "flowed"
     }
-  }
+  };
 
-=head1 DESCRIPTION
+=head1 FUNCTIONS
 
-This module is responsible for parsing email content type headers
-according to section 5.1 of RFC 2045. It returns a hash as above, with
-entries for the discrete type, the composite type, and a hash of
-attributes.
+=head2 parse_content_type
+
+This routine is exported by default.
+
+This routine parses email content type headers according to section 5.1 of RFC
+2045. It returns a hash as above, with entries for the discrete type, the
+composite type, and a hash of attributes.
 
 =head1 WARNINGS
 
@@ -128,18 +134,16 @@ it encounters a header of this type, but you can suppress this by setting
 C<$Email::MIME::ContentType::STRICT_PARAMS> to a false value.  Please consider
 localizing this assignment!
 
-=head2 EXPORT
+=head1 PERL EMAIL PROJECT
 
-C<parse_content_type>
+This module is maintained by the Perl Email Project.
+
+L<http://emailproject.perl.org/wiki/Email::MIME::ContentType>
 
 =head1 AUTHOR
 
 Casey West, C<casey@geeknest.com>
 Simon Cozens, C<simon@cpan.org>
-
-=head1 CONTACT
-
-Perl Email Project, C<pep@perl.org>.
 
 =head1 SEE ALSO
 
