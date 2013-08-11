@@ -1,21 +1,72 @@
-use 5.006; # why?  -- rjbs, 2006-11-20
-use strict;
-use ExtUtils::MakeMaker;
 
-WriteMakefile(
-  NAME              => 'Email::MIME::ContentType',
-  VERSION_FROM      => 'lib/Email/MIME/ContentType.pm',
-  (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
-  PREREQ_PM         => {},
-  ($] >= 5.005 ?
-    (ABSTRACT_FROM  => 'lib/Email/MIME/ContentType.pm',
-     AUTHOR         => 'Simon Cozens <simon@nonet>') : ()),
-  (eval { ExtUtils::MakeMaker->VERSION(6.46) }
-    ? (META_MERGE => {
-        resources => {
-          Repository => 'http://github.com/rjbs/email-mime-contenttype'
-        }
-      })
-    : ()
-  ),
+use strict;
+use warnings;
+
+
+
+use ExtUtils::MakeMaker 6.30;
+
+
+
+my %WriteMakefileArgs = (
+  "ABSTRACT" => "Parse a MIME Content-Type Header",
+  "AUTHOR" => "Simon Cozens <simon\@cpan.org>, Casey West <casey\@geeknest.com>, Ricardo SIGNES <rjbs\@cpan.org>",
+  "BUILD_REQUIRES" => {},
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "Email-MIME-ContentType",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "Email::MIME::ContentType",
+  "PREREQ_PM" => {
+    "Carp" => "0",
+    "Exporter" => "5.57",
+    "strict" => "0",
+    "warnings" => "0"
+  },
+  "TEST_REQUIRES" => {
+    "Capture::Tiny" => "0",
+    "Test::More" => "0.96",
+    "blib" => "0"
+  },
+  "VERSION" => "1.016",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
 );
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
+  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
+  for my $mod ( keys %$tr ) {
+    if ( exists $br->{$mod} ) {
+      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
+    }
+    else {
+      $br->{$mod} = $tr->{$mod};
+    }
+  }
+}
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+

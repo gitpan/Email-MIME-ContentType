@@ -1,10 +1,14 @@
 Changes
-lib/Email/MIME/ContentType.pm
-Makefile.PL
-MANIFEST
-README
-t/1.t
-t/pod.t
-t/pod-coverage.t
 LICENSE
-META.yml                                 Module meta-data (added by MakeMaker)
+MANIFEST
+META.json
+META.yml
+Makefile.PL
+README
+dist.ini
+lib/Email/MIME/ContentType.pm
+t/00-compile.t
+t/000-report-versions-tiny.t
+t/1.t
+xt/release/changes_has_content.t
+xt/release/pod-syntax.t

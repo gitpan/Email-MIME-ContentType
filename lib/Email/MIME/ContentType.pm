@@ -1,26 +1,28 @@
-package Email::MIME::ContentType;
-use base 'Exporter';
-use vars qw[
-  $VERSION @EXPORT
-  $STRICT_PARAMS
-];
-@EXPORT = qw(parse_content_type);
 use strict;
-use Carp;
-$VERSION = '1.015';
+use warnings;
+package Email::MIME::ContentType;
+{
+  $Email::MIME::ContentType::VERSION = '1.016';
+}
+# ABSTRACT: Parse a MIME Content-Type Header
 
-$STRICT_PARAMS=1;
+use Carp;
+use Exporter 5.57 'import';
+our @EXPORT = qw(parse_content_type);
+
+
+our $STRICT_PARAMS=1;
 
 my $tspecials = quotemeta '()<>@,;:\\"/[]?=';
 my $ct_default = 'text/plain; charset=us-ascii';
-my $extract_quoted = 
+my $extract_quoted =
     qr/(?:\"(?:[^\\\"]*(?:\\.[^\\\"]*)*)\"|\'(?:[^\\\']*(?:\\.[^\\\']*)*)\')/;
 
 # For documentation, really:
 {
-  my $discrete  = qr/[^$tspecials]+/;
-  my $composite = qr/[^$tspecials]+/;
-  my $params    = qr/;.*/;
+  my $type    = qr/[^$tspecials]+/;
+  my $subtype = qr/[^$tspecials]+/;
+  my $params  = qr/;.*/;
 
   sub parse_content_type { # XXX This does not take note of RFC2822 comments
       my $ct = shift;
@@ -31,12 +33,18 @@ my $extract_quoted =
       # It is also recommend (sic.) that this default be assumed when a
       # syntactically invalid Content-Type header field is encountered.
       return parse_content_type($ct_default)
-          unless $ct =~ m[ ^ ($discrete) / ($composite) \s* ($params)? $ ]x;
+          unless $ct =~ m[ ^ ($type) / ($subtype) \s* ($params)? $ ]x;
 
+      my ($type, $subtype) = (lc $1, lc $2);
       return {
-          discrete   => lc $1,
-          composite  => lc $2,
-          attributes => _parse_attributes($3)
+          type       => $type,
+          subtype    => $subtype,
+          attributes => _parse_attributes($3),
+
+          # This is dumb.  Really really dumb.  For backcompat. -- rjbs,
+          # 2013-08-10
+          discrete   => $type,
+          composite  => $subtype,
       };
   }
 }
@@ -84,13 +92,15 @@ sub _extract_ct_attribute_value { # EXPECTS AND MODIFIES $_
 
 __END__
 
+=pod
+
 =head1 NAME
 
 Email::MIME::ContentType - Parse a MIME Content-Type Header
 
 =head1 VERSION
 
-version 1.013
+version 1.016
 
 =head1 SYNOPSIS
 
@@ -101,8 +111,8 @@ version 1.013
   my $data = parse_content_type($ct);
 
   $data = {
-    discrete   => "text",
-    composite  => "plain",
+    type       => "text",
+    subtype    => "plain",
     attributes => {
       charset => "us-ascii",
       format  => "flowed"
@@ -116,8 +126,13 @@ version 1.013
 This routine is exported by default.
 
 This routine parses email content type headers according to section 5.1 of RFC
-2045. It returns a hash as above, with entries for the discrete type, the
-composite type, and a hash of attributes.
+2045. It returns a hash as above, with entries for the type, the subtype, and a
+hash of attributes.
+
+For backward compatibility with a really unfortunate misunderstanding of RFC
+2045 by the early implementors of this module, C<discrete> and C<composite> are
+also present in the returned hashref, with the values of C<type> and C<subtype>
+respectively.
 
 =head1 WARNINGS
 
@@ -131,19 +146,29 @@ it encounters a header of this type, but you can suppress this by setting
 C<$Email::MIME::ContentType::STRICT_PARAMS> to a false value.  Please consider
 localizing this assignment!
 
-=head1 PERL EMAIL PROJECT
+=head1 AUTHORS
 
-This module is maintained by the Perl Email Project.
+=over 4
 
-L<http://emailproject.perl.org/wiki/Email::MIME::ContentType>
+=item *
 
-=head1 AUTHOR
+Simon Cozens <simon@cpan.org>
 
-Casey West, C<casey@geeknest.com>
-Simon Cozens, C<simon@cpan.org>
+=item *
 
-=head1 SEE ALSO
+Casey West <casey@geeknest.com>
 
-L<Email::MIME>
+=item *
+
+Ricardo SIGNES <rjbs@cpan.org>
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2004 by Simon Cozens.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
