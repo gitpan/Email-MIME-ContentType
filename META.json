@@ -55,7 +55,7 @@
          "web" : "https://github.com/rjbs/Email-MIME-ContentType"
       }
    },
-   "version" : "1.016",
+   "version" : "1.017",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.019002"

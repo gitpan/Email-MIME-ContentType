@@ -26,7 +26,7 @@ resources:
   bugtracker: https://github.com/rjbs/Email-MIME-ContentType/issues
   homepage: https://github.com/rjbs/Email-MIME-ContentType
   repository: https://github.com/rjbs/Email-MIME-ContentType.git
-version: 1.016
+version: 1.017
 x_Dist_Zilla:
   perl:
     version: 5.019002
